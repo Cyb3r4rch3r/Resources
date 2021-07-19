@@ -1,0 +1,26 @@
+Terminal Commands
+
+ 
+Get list of users - dscl . list /Users UniqueID
+Get who is currently active - w
+Check previous logins - last
+Get Network connections - netstat -na | egrep 'LISTEN|ESTABLISH'
+Get list of files with open ports/connections - lsof -i
+Get list of all open files - lsof
+Get running process info specific process - ps -p <PID>
+Get all running processes - ps -axo user,pid,ppid,%cpu,%mem,start,time,command
+Get Application Info - lsappinfo list
+Get running daemons - launchtl list
+Get FS Info - ls -al ~/.* ~/Library /Library ~/Library/Application\ Support /Library/Application\ Support/
+Get Shared info - ls -al /Users/Shared
+Get tmp info - ls -al /private/tmp
+Get User's Temporary Directories - ls -al $TMPDIR
+Find recently created - find . -mtime +0m -a -mtime -30m -print (specify h for hours or remove entirely for days)
+Check OS Quarantine - sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'select LSQuarantineEventIdentifier, LSQuarantineAgentName, LSQuarantineAgentBundleIdentifier, LSQuarantineDataURLString, LSQuarantineSenderName, LSQuarantineSenderAddress, LSQuarantineOriginURLString, LSQuarantineTypeNumber, date(LSQuarantineTimeStamp + 978307200, "unixepoch") as downloadedDate from LSQuarantineEvent order by LSQuarantineTimeStamp' | sort | grep '|' --color
+Alternative Quarantine check - mdfind com.apple.quarantine
+
+
+Network Information
+Basic config - ifconfig
+DNS settings (check for hijack) - plutil -p /Library/Preferences/SystemConfiguration/preferences.plist
+proxy check - scutil --proxy
