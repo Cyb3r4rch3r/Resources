@@ -1,0 +1,15 @@
+Arp Commands		
+Action		Command
+Display ARP table		arp -a
+Same as -a		arp -g
+Display ARP table in verbose mode		arp -v
+Specifies and internet address		arp inet_addr
+Displays the ARP entries for the specified network interface		arp -N if_addr
+Delete an IP address (arp -d 192.168.100.10)		arp -d
+Add an entry to the ARP table (arp -s ADDRESS MAC_ADDRESS - Where ADDRESS is the address to be added and MAC_ADDRESS is the MAC address of the machine)		arp -s
+Specifies a physical address		arp eth_addr
+Specifies the internet address of the interface that needs modification		arp if_addr
+		
+Show local routes		route print
+		
+Get MAC Address		getmac /S <computername> /U domain\user 
