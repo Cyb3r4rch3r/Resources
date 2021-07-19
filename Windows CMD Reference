@@ -1,0 +1,92 @@
+Microsoft Windows CMD Commands		
+
+Action	Command
+Open Admin cmd prompt from cmd		runas /user:domain\user cmd
+Open application as admin		runas /user:domain\user application
+Specify Target Computer		shutdown /m \\<computer>
+Abort Shutdown		shutdown /a
+Remote Shutdown		shutdown /I    OR   shutdown /m \\<name|IP Address> /r /t 0 /f
+Shutdown		shutdown /p
+Restart		shutdown /r
+List directories		dir
+Make new Directory		mkdir
+Remove Directory		rmdir
+See all  Directory Commands		dir /?
+Clear Command Prompt		cls
+		
+Network		
+Disable Network Interface		netsh interface set interface name="Local Area Connection" admin=disabled
+Change from static to DHCP		netsh interface ip set address “Local Area Connection” dhcp
+Set Proxy		netsh winhttp set proxy <proxyservername/ipaddress:port>
+		
+Windows Management Instrumentation Command-line		wmic
+		https://msdn.microsoft.com/en-us/library/windows/desktop/aa394531(v=vs.85).aspx
+Get Computer Model Remotely		wmic csproduct get vendor,version
+Change hostname remotely		WMIC computersystem where caption='currentname' rename newname
+Remote add user to Administrators		psexec \\computer net localgroup Administrators "domain\user" /add
+Remote add user to Remote Users		psexec \\computer net localgroup "Remote Desktop Users" "domain\user" /add
+Get specific PID information		wmic process where "processid=<PID>" get processid,parentprocessid,executablepath
+Get specific PID information from remote computer		wmic /node:10.70.106.25 process where "processid=<PID>" get processid,parentprocessid,executablepath
+Get Hofix Information		wmic /node:<computer> qfe 
+		
+		
+Net Commands		
+Packet Trace via cmd		netsh trace start scenario=NetConnection capture=yes report=yes persistent=no maxsize=1024 correlation=yes traceFile=c:\NetTrace.etl
+		Add "overwrite=yes" to overwrite trace file
+		netsh trace stop
+		
+		
+		
+Show Wireless Network Passwords		netsh wlan show profile name=[SSID] key=clear
+Show only Password		netsh wlan show profile name=[SSID] key=clear | findstr Key
+		
+Get Public IP address		nslookup myip.opendns.com. Resolver1.opendns.com
+		
+w32tm 		NTP Settings
+w32tm /resync		se
+w32tm /query /status		
+w32tm /query /configuration		
+		
+		
+Folder Permissions:		
+Get Folder Permissions		icacls "<Drive:\Folder"
+Grant Folder Permissions		icacls "<Drive:\Folder" /grant "<User/Security Group>":(<Advanced Options>)<Access Level> /T
+Options		https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls
+		
+Remove Folder Permissions		icacls "<Drive:\Folder" /remove "<User/Security Group>"
+Grant "Change Permissions" Only		icacls "TestFolder" /grant:r "<domain\security group>":(OI)(CI)(RC,AS,REA,WEA,RA) /t /c
+		
+		
+		
+		
+AD Domain Controller Replication		
+Force DC Sync (Replication)		repadmin /syncall /AdeP
+		
+		
+		
+Folder Search		
+List current directory items		dir
+Search for folder		dir <folder name> /AD /s
+Search for interesting files		dir /s *pass* == *cred* == *vnc* == *.config*
+		
+		
+Read Files in CMD (Windows version of cat)		
+Displays the contents of a text file or files.		TYPE [drive:][path]filename
+		
+		
+		
+		
+Remote Session Management		
+List connected sessions on server		qwinsta /server:<servername>
+Disconnect session on remote server		rwinsta /server:<servername> <sessionid>
+		
+		
+SystemInfo		
+Local System		Systeminfo
+Remote System		Systeminfo /S <computername>
+Get System Up-Time		systeminfo /s <computername> | findstr -i "Boot Time:"
+		
+		
+		
+Managed Service Accounts		
+Managed Service Account Assignment via SC		sc.exe config "<Service Name" obj="DOMAIN\ServiceAccount" password"~"
