@@ -1,0 +1,15 @@
+IP Config Commands		
+Action		Command
+Shows IP address information		ipconfig
+Shows detailed information		ipconfig /all
+Renews IP address of all adapters		ipconfig /renew
+Renews connection whose name starts with EL		ipconfig /renew EL*
+Release all matching connections		ipconfig /release *Con*
+Show information about all compartments		ipconfig /allcompartments
+Show detailed information about all compartments		ipconfig /allcompartments /all
+Display DNS Cache		ipconfig /displaydns
+		
+Ping the specified host until stopped		ping -t
+		
+		
+Ping sweep		 for /l %i in (1,1,254) do ping -n 1 -w 100 <first three octets of host network>.%i
