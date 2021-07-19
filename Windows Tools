@@ -1,0 +1,101 @@
+Kansa Incident Response Framework
+Kansa
+A modular incident response framework in Powershell. It's been tested in PSv2 / .NET 2 and later and works mostly without issue.
+
+But really, upgrade to PSv3 or later. Be happy.
+
+More info:
+http://trustedsignal.blogspot.com/search/label/Kansa
+http://www.powershellmagazine.com/2014/07/18/kansa-a-powershell-based-incident-response-framework/
+
+What does it do?
+It uses Powershell Remoting to run user contributed, ahem, user contri-
+buted modules across hosts in an enterprise to collect data for use
+during incident response, breach hunts, or for building an environmental
+baseline.
+
+ 
+
+Download - https://github.com/davehull/Kansa
+
+FOCA
+FOCA (Fingerprinting Organizations with Collected Archives) is a tool used mainly to find metadata and hidden information in the documents its scans. These documents may be on web pages, and can be downloaded and analyzed with FOCA.
+
+It is capable of analyzing a wide variety of documents, with the most common being Microsoft Office, Open Office, or PDF files, although it also analyzes Adobe InDesign or SVG files, for instance.
+
+These documents are searched for using three possible search engines: Google, Bing, and DuckDuckGo. The sum of the results from the three engines amounts to a lot of documents. It is also possible to add local files to extract the EXIF information from graphic files, and a complete analysis of the information discovered through the URL is conducted even before downloading the file.
+
+With all data extracted from all files, FOCA matches information in an attempt to identify which documents have been created by the same team and what servers and clients may be infered from them.
+
+ 
+
+Download - https://www.elevenpaths.com/labstools/foca/index.html
+
+Requirements -
+
+
+
+ 
+PingCastle Active Directory Audit
+PingCastle is a free, Windows-based utility to audit the risk level of your AD infrastructure and check for vulnerable practices. It's a simple zipped download that you can just run as a normal domain user, no install required.
+
+Project website - www.pingcastle.com
+
+Creator's Twitter account - Vincent Le Toux
+
+You can run it on an ad-hoc basis to generate a detailed HTML report, but that's just the tip of the iceberg. It can be used to schedule reports and email them (or push them to webdav shares), create spreadsheets, or even automatically create PowerPoint presentations of the data. It can also be used to map out attack paths to certain accounts.
+
+If you run it in the default 'healthcheck' mode, it'll give you a "Domain Risk Level" score out of 100, and then detail all of the issues with your domain(s).
+
+ 
+
+Download - https://www.pingcastle.com/download/
+
+BloodHound
+BloodHound is an application developed with one purpose: to find relationships within an Active Directory (AD) domain to discover attack paths. It does so by using graph theory to find the shortest path for an attacker to traverse to elevate their privileges within the domain.
+
+ 
+
+Download - https://github.com/BloodHoundAD/BloodHound
+
+Requirements - neo4j Database
+
+Maltego
+Maltego is an opensource intelligence (OSINT) and graphical link analysis tool for gathering and connecting information for investigative tasks. Uses "Transforms" to create relationships between entities useful for recon of targets and to see what information is available on the internet about your organization.
+ 
+Download - https://www.maltego.com/downloads/
+Requirements - Maltego/Paterba Free Account is required to use Maltego Community Edition
+OWASP ZAP
+The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular web application security testing tools. It is made available for free as an open source project, and is contributed to and maintained by OWASP. The Open Web Application Security Project (OWASP) is a vendor-neutral, non-profit group of volunteers dedicated to making web applications more secure. The OWASP ZAP tool can be used during web application development by web developers or by experienced security experts during penetration tests to assess web applications for vulnerabilities.
+ 
+Download - https://www.zaproxy.org/download/
+Burp Suite
+Burp Suite is an integrated platform for performing security testing of web applications. It is designed to be used by hands-on testers to support the testing and development process.
+ 
+Download - https://portswigger.net/burp/communitydownload
+SRUM Dump
+
+ 
+SRUM Dump extracts information from the System Resource Utilization Management Database and creates a Excel spreadsheet.
+
+The SRUM is one of the best sources for applications that have run on your system in the last 30 days and is invaluable to your incident investigations!
+
+To use the tool you will need a copy of the SRUM (located in c:\windows\system32\sru\srudb.dat, but locked by the OS).
+
+This tool also requires a SRUM_TEMPLATE that defines table and field names. You can optionally provide the SOFTWARE registry hive and the tool will tell you which wireless networks were in use by applications.
+
+If you are looking for a version of this tool that creates CSV files instead of an Excel spreadsheet, dumps targeted tables or processes any ese then check out ese2csv. ese2csv.exe is designed specifically for csv files with the CLI user in mind.
+
+TO RUN THE TOOL :
+
+Please Download both srum_dump2.exe and SRUM_TEMPLATE2.XLSX. Place them in the same directory and double click srum_dump2.exe If you want to analyze the system that SRUM_DUMP is running on (Live Aquisition) then it must be running as an administrator.
+
+ 
+
+Github - https://github.com/MarkBaggett/srum-dump
+
+Executables - \\cov-file01.ad.covenanths.org\covits$\InfoSec\Tools\srum-dump-master
+
+ 
+
+Additonal Resource (still beta) - https://github.com/tvfischer/ps-srum-hunting
