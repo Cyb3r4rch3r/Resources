@@ -1,0 +1,21 @@
+Connect			
+Connect to Security and Compliance Center		Connect-IPPSSession -UserPrincipalName 	Connect to Security and Compliance Center
+			
+Content Discovery			
+			
+Create new eDiscovery Search		$Search = New-ComplianceSearch -Name "<Name>" -ExchangeLocation All -ContentMatchQuery 'Sender:"<sender>"'	
+Start the new search		Start-ComplianceSearch -Identity $Search.Identity	
+			
+			
+Get Status			
+Check the status of the search		Get-ComplianceSearch <Search Name>	Encapsulate name in "" (Double Quotes) if name includes spaces
+Preview the results		New-ComplianceSearchAction <Name> -Preview | select -ExpandProperty Results | fl	
+			
+			
+Delete the messages			
+Soft Delete		New-ComplianceSearchAction -SearchName <Name> -Purge -PurgeType SoftDelete	Soft Deleted items are recoverable by the user
+Hard Delete		New-ComplianceSearchAction -SearchName <Name> -Purge -PurgeType HardDelete	Hard Deleted items are not recoverable by the end user
+			
+			
+Get Status of Delete Operation			
+Check status of delete/purge operation		Get-ComplianceSearchAction <name>_Purge	
