@@ -1,0 +1,15 @@
+CMD		
+		
+Get specific PID information		wmic process where "processid=<PID>" get processid,parentprocessid,executablepath
+Get specific PID information from remote computer		wmic /node:10.70.106.25 process where "processid=<PID>" get processid,parentprocessid,executablepath
+		
+Find hidden data streams		dir /s/r <path>
+		
+		
+		
+Packet Capture Natively		
+List Interfaces		netsh trace show interfaces
+Start		netsh trace start capture=yes Ethernet.Type=IPv4 CaptureInterface='Interface GUID from above'
+Stop		netsh trace stop
+		
+Locate Files		where <pattern>
