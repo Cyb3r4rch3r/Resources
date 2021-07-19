@@ -1,3 +1,26 @@
 Crawl File Shares
 function Crawl{Get-ChildItem $path -force -Recurse | Select Name, Directory, fullname, extension, @{Name="Owner";Expression={(Get-ACL $_.Fullname).Owner}}, LastWriteTime, @{Name="Megabytes";Expression={"{0:F2}" -f ($_.length/1MB)}} | export-csv "Share-Info-Test.csv" -NoTypeInformation}
 
+
+
+Description	Command	
+		
+Find all folder with Everyone Access	Get-ChildItem -Path '<PATH>' -Recurse | Where-Object{$_.PSIsContainer} | Get-Acl | Where{$_.accesstostring -like "*Everyone*"} | FL	
+		
+AD-Connect Forced Sync	Start-ADSyncSyncCycle -PolicyType Delta	Must be run in Administrative PowerShell
+		
+Change Powershell 'Location' to Active Directory 	Set-Location AD:	
+		
+Get-ACL on OU	(get-acl 'OU=People,OU=<Location>,,DC=domain,DC=com').access | ft identityreference, accesscontroltype -AutoSize	Must be run from AD Location
+		
+Find Delegated Permissions	dsacls 'DC=domain,DC=com'	
+		
+Find Delegated Password Reset Permissions	dsacls 'DC=domain,DC=com' | select-string "Reset Password"	
+		
+Find Security Permissions Applied to Group	(Get-ACL "AD:$((get-adgroup <Security Group Name>).distinguishedname)").access | select identityreference,  accesscontroltype, activedirectoryrights | ft -auto	
+		
+Create Managed Service Account	New-ADServiceAccount "Mygmsa1" -DNSHostName "Mygsma1.ad.covenanths.org" –PrincipalsAllowedToRetrieveManagedPassword "<Server name or Security Group>"	
+		
+Add  PrincipalsAllowedToRetrieveManagedPassword	Set-ADServiceAccount -Identity "<svc_account>" -PrincipalsAllowedToRetrieveManagedPassword <machine$ or security_group>, <machine$ or security_group>	
+		
+Replace PrincipalsAllowedToRetrieveManagedPassword	Set-ADServiceAccount -Identity "<svc_account>" -PrincipalsAllowedToRetrieveManagedPassword <machine$ or security_group>	
