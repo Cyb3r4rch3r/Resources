@@ -1,0 +1,17 @@
+Connect to SharePoint Online	Connect-SPOService https://tenant.url
+	
+Add User as Admin to Another User's OneDrive	Set-SPOUser -site https://tenant.url/personal/<username> -LoginName <username> -IsSiteCollectionAdmin $true
+	
+See Permissions on OneDrive	Get-SPOUser -site https://tenant.url/personal/<username>
+	
+Connect to Exchange Online	Connect-ExchangeOnline -UserPrincipalName
+	
+Connect to Security and Compliance Center	Connect-IPPSSession -UserPrincipalName 
+	
+Force AD-Connect Sync	Start-ADSyncSyncCycle -PolicyType Delta
+	
+	
+Set TimeZone and Locale for all users	get-mailbox | Set-MailboxRegionalConfiguration -Language -TimeZone
+	https://www.quadrotech-it.com/blog/set-language-and-time-zone-for-all-owa-users-in-office-365/
+	
+Example - sets users in array to English US language and Eastern Time Zone	foreach ($user in $users){get-mailbox $user | Set-MailboxRegionalConfiguration -Language 1033 -TimeZone "Eastern Standard Time"}
