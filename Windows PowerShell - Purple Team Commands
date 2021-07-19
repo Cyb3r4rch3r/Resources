@@ -1,0 +1,7 @@
+Description	Command
+
+Get User SPN's	get-aduser -filter * -pr ServicePrincipalNames | ? {$_.ServicePrincipalNames -like "*"} | select name, samaccountname, ServicePrincipalNames
+
+Run encoded command (Byapss AV)	powershell.exe -encodedcommand <Base64 encoded command>
+
+Change MAC Address (Evasion)	Set-NetAdapter -Name "Ethernet 1" -MacAddress "00-10-18-57-1B-0D"
