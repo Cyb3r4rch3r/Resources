@@ -1,0 +1,46 @@
+Junk Mailbox Configurations:			
+Get users junkmail config		Get-MailboxJunkEmailConfiguration	Allows to see trusted and blocked senders on a personal/per-mailbox basis
+Add to user's safe-senders list		Set-MailboxJunkEmailConfiguration <Users Mail>  -TrustedSendersAndDomains @{Add="<Senders email or domain>"}	Allows to set trusted and blocked senders on a personal/per-mailbox basis
+Add to user's block-senders list		Set-MailboxJunkEmailConfiguration <Users Mail>  -BlockedSendersAndDomains @{Add="<Senders email or domain>"}	
+			
+			
+Mailbox Delegate Permissions:			
+Add new delegate permissions		Add-MailboxFolderPermission mailbox:\folder -user <delegate> -AccessRights <rights>	https://docs.microsoft.com/en-us/powershell/module/exchange/mailboxes/add-mailboxfolderpermission?view=exchange-ps
+Change exisiting delegate permissions		Set-MailboxFolderPermission -Identity mailbox:\folder -User <delegate> -AccessRights <rights>	https://docs.microsoft.com/en-us/powershell/module/exchange/mailboxes/set-mailboxfolderpermission?view=exchange-ps
+			
+			
+Shared Mailbox Management			
+
+Add new members		add-mailboxpermission -identity <sharedmailbox> -AccessRights FullAccess -InheritanceType All -AutoMapping $true -User <member>	
+Grant new members "Send As" permissions - Required		Add-RecipientPermission -Identity <sharedmailbox> -AccessRights SendAs -Confirm:$false -Trustee <member>	
+Remove Members		Remove-MailboxPermission -Identity <sharedmailbox> -AccessRights FullAccess -Confirm:$false -User <member>	
+Remove Send As permissions		Remove-RecipientPermission -Identity <sharedmailbox> -AccessRights SendAs -Confirm:$false -Trustee <member>	
+List Shared Mailbox Members		Get-Mailbox -RecipientTypeDetails <SharedMailbox> -ResultSize:Unlimited | Get-MailboxPermission | Select-Object Identity,User,AccessRights | Where-Object {($_.user -like '*@*')}	
+			
+			
+			
+Mailbox Information			
+
+Check for Forwarding		get-mailbox <email address> | select displayname, windowsemailaddress, delivertomailboxandforward, forwardingaddress, forwardingsmtpaddress | fl	
+Check for mailbox rules		get-inboxrule -mailbox <email address>	
+Remove Forwarding Addresses		Set-Mailbox –Identity  <email address"  -ForwardingAddress  $null	
+Remove InboxRule		Remove-InboxRule -Mailbox <email address> -Identity "<Rule name>"	
+			
+			
+			
+			
+Dynamic Distribution List Management			
+			
+New Dynamic Distribution List Based on Office Location		New-DynamicDistributionGroup -Name <DL Name> -Alias <Alias Name> -RecipientFilter "((((((((((((((((((((((RecipientType -eq 'UserMailbox') -and (Office -eq '<Office>'))) -and (-not(Name -like 'SystemMailbox{*')))) -and (-not(Name -like 'CAS_{*')))) -and (-not(RecipientTypeDetailsValue -eq 'MailboxPlan')))) -and (-not(RecipientTypeDetailsValue -eq 'DiscoveryMailbox')))) -and (-not(RecipientTypeDetailsValue -eq 'PublicFolderMailbox')))) -and (-not(RecipientTypeDetailsValue -eq 'ArbitrationMailbox')))) -and (-not(RecipientTypeDetailsValue -eq 'AuditLogMailbox')))) -and (-not(RecipientTypeDetailsValue -eq 'AuxAuditLogMailbox')))) -and (-not(RecipientTypeDetailsValue -eq 'SupervisoryReviewPolicyMailbox')))) -and (-not(Name -like 'SystemMailbox{*')) -and (-not(Name -like 'CAS_{*')) -and (-not(RecipientTypeDetailsValue -eq 'MailboxPlan')) -and (-not(RecipientTypeDetailsValue -eq 'DiscoveryMailbox')) -and (-not(RecipientTypeDetailsValue -eq 'PublicFolderMailbox')) -and (-not(RecipientTypeDetailsValue -eq 'ArbitrationMailbox')) -and (-not(RecipientTypeDetailsValue -eq 'AuditLogMailbox')) -and (-not(RecipientTypeDetailsValue -eq 'AuxAuditLogMailbox')) -and (-not(RecipientTypeDetailsValue -eq 'SupervisoryReviewPolicyMailbox')))	
+			
+			
+			
+Distribution List Management			
+			
+Add Users to Existing Distribution Lists		add-distributiongroupmember -identity "Distribution Group" -Member $user	
+			
+			
+Mailbox Allow/Block Lists Management			
+			
+Add email to safe-senders list for user		Set-MailboxJunkEmailConfiguration -Identity <user/shared mailbox>  -TrustedSendersAnd Domains @{Add="<sender email>"}	
+Add email to Blocked list for user		Set-MailboxJunkEmailConfiguration -Identity <user/shared mailbox>  -BlockedSendersAnd Domains @{Add="<sender email>"}	
