@@ -7,6 +7,7 @@ Alternate Data Streams - Recursive		Get-ChildItem -recurse | ForEach { Get-Item 
 Get stream data		Get-Content -path <file> -stream <stream name>
 		
 		
-Check for Reverse WebShells		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String '<%eval\{Request.Item' -List | select Path
+Check for Reverse WebShells		
+		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String '<%eval\{Request.Item' -List | select Path
 		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String 'function Page_Load\(\){eval\(Request' -List | select Path
 		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String 'f34fji34r209ur29ur92r' -List | select Path
