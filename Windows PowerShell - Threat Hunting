@@ -11,3 +11,11 @@ Check for Reverse WebShells
 		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String '<%eval\{Request.Item' -List | select Path
 		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String 'function Page_Load\(\){eval\(Request' -List | select Path
 		Get-ChildItem -Path "c:\" -Recurse -Filter *.aspx | Select-String 'f34fji34r209ur29ur92r' -List | select Path
+
+
+
+Search Windows Event Logs:
+		Get-EventLog -LogName "Log Name" | where-object {$_.Message -match "Query"}
+		Get-WinEvent -LogName "Log Name" | Where-Object {$_.Message -match "Query"}
+		Get-EventLog -LogName "Log Name" | where-object {$_.Message -notmatch "Query"}
+		Get-WinEvent -LogName "Log Name" | Where-Object {$_.Message -notmatch "Query"}
