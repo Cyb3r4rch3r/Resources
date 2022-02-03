@@ -24,3 +24,6 @@ Create Managed Service Account	New-ADServiceAccount "Mygmsa1" -DNSHostName "Mygs
 Add  PrincipalsAllowedToRetrieveManagedPassword	Set-ADServiceAccount -Identity "<svc_account>" -PrincipalsAllowedToRetrieveManagedPassword <machine$ or security_group>, <machine$ or security_group>	
 		
 Replace PrincipalsAllowedToRetrieveManagedPassword	Set-ADServiceAccount -Identity "<svc_account>" -PrincipalsAllowedToRetrieveManagedPassword <machine$ or security_group>	
+
+
+Get All LAPS Passwords - Get-AdComputer -Filter * -Properties ms-Mcs-AdmPwd | Where-Object {$_."ms-Mcs-AdmPwd" -ne $null} | Select-Object Name, ms-Mcs-AdmPwd
